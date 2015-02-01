@@ -9,8 +9,7 @@
 
 En MySql:
 
-...
-
+```
  CREATE TABLE `sms` (
   `idSMS` int(11) NOT NULL AUTO_INCREMENT,
   `Origen` varchar(45) NOT NULL,
@@ -18,8 +17,7 @@ En MySql:
   `Msg` varchar(45) NOT NULL,
   PRIMARY KEY (`idSMS`)
 ) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8;
-
-...
+```
 
 * Como correr una prueba (How to run tests)
 
