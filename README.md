@@ -1,6 +1,4 @@
-
-# README #
-
+# SMS_Server
 
 ### How do I get set up? ###
 
@@ -34,6 +32,6 @@ Los puertos seriales se pueden simular
 
 
 ### Who do I talk to? ###
-=======
-# SMS_Server
+
+
 
