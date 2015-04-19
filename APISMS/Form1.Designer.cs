@@ -40,6 +40,8 @@
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.label2 = new System.Windows.Forms.Label();
             this.MySqlStatus = new System.Windows.Forms.Label();
+            this.Clear = new System.Windows.Forms.Button();
+            this.label3 = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // bOpen
@@ -124,11 +126,32 @@
             this.MySqlStatus.TabIndex = 22;
             this.MySqlStatus.Text = "_";
             // 
+            // Clear
+            // 
+            this.Clear.Location = new System.Drawing.Point(415, 205);
+            this.Clear.Name = "Clear";
+            this.Clear.Size = new System.Drawing.Size(75, 23);
+            this.Clear.TabIndex = 23;
+            this.Clear.Text = "Clear";
+            this.Clear.UseVisualStyleBackColor = true;
+            this.Clear.Click += new System.EventHandler(this.Clear_Click);
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(292, 235);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(35, 13);
+            this.label3.TabIndex = 24;
+            this.label3.Text = "label3";
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(502, 261);
+            this.Controls.Add(this.label3);
+            this.Controls.Add(this.Clear);
             this.Controls.Add(this.MySqlStatus);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.textBox2);
@@ -159,6 +182,8 @@
         private System.Windows.Forms.Timer timer1;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label MySqlStatus;
+        private System.Windows.Forms.Button Clear;
+        private System.Windows.Forms.Label label3;
     }
 }
 

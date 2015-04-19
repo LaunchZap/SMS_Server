@@ -24,7 +24,10 @@ Para simular un SMS entrante se debe enviar vía [Hercules](http://new.hwg.cz/fi
 ```
 0D 0A 2B 43 4D 54 3A 20 22 33 31 31 33 30 34 37 34 30 30 22 2C 2C 22 31 34 2F 31 30 2F 31 39 2C 31 30 3A 30 33 3A 35 38 2D 32 30 22 0D 0A 48 65 6C 6C 6F 20 77 6F 72 6C 64 21 21 21 0D 0A 
 ```
-
+```
++CMT: "3113047400",,"14/10/19,10:03:58-20"
+Hello world!!!
+```
 Los puertos seriales se pueden simular 
 
 ### Contribution guidelines ###

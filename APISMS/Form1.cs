@@ -15,10 +15,26 @@ namespace APISMS
 {
     public partial class Form1 : Form
     {
+        //Connection string for Connector/ODBC 3.51
+        string MyConString = "Server=localhost;" +
+          "Database=test;" +
+          "Port=3306;" +
+          "uid=designer;" +
+          "password=test2014";
+
+        string menu = "Bienvenido a LaunchZap\r\n" +
+                    "1. Saldo\r\n" +
+                    "2. Compra\r\n" +
+                    "3. Configuracion\r\n" +
+                    "4. Salir";
+
         public Form1()
         {                       
             InitializeComponent();
-            findPorts();           
+            findPorts();
+            ConnectMySql();
+
+            label3.Text = System.DateTime.Now.ToString("HH:mm:ss", System.Globalization.DateTimeFormatInfo.InvariantInfo);
         }
 
         //public SerialPort serialPort;       
@@ -124,12 +140,33 @@ namespace APISMS
         private void textBox1_TextChanged(object sender, EventArgs e)
         {
             //Estado.Text = "cambio";
-            int indice;
-            string Buf = textBox1.Text;
+            //int indice;
+            //string Buf = textBox1.Text;
             string Origen="";
             string timeStamp = "";
             string Msg = "";
 
+            //Inserta SMS en la DB
+            if (procesarMsg(textBox1.Text, out Origen, out timeStamp, out Msg))
+            {
+               // Mysql(Origen, timeStamp, Msg);
+            }
+
+            if (Msg == "*722#")
+            {
+                //MessageBox.Show("Origen: " + Origen + "\nRecivido: " + timeStamp + "\nMensaje: " + Msg, "Contenido SMS");
+                if (serialPort1.IsOpen) serialPort1.Write(menu + "\r");
+                else MessageBox.Show(menu, "Enviando SMS");
+            }
+        }
+
+        public bool procesarMsg(string Buf, out string Origen, out string timeStamp, out string Msg)
+        {
+            int indice;
+            
+            Origen = "";
+            timeStamp = "";
+            Msg = "";
             char[] value = { ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ' };
             char[] fecha = { ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ' };
             char[] sms = { ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ' };
@@ -140,20 +177,20 @@ namespace APISMS
                 indice = Buf.IndexOf("\"", 0);
 
                 //Extrae el numero celular
-                Buf.CopyTo(indice+1, value, 0, 10);                
-                for (var index = 0; index < 10; index++ )
+                Buf.CopyTo(indice + 1, value, 0, 10);
+                for (var index = 0; index < 10; index++)
                 {
                     Origen += value[index];
                 }
 
-                indice = Buf.IndexOf("\"", indice+1);
+                indice = Buf.IndexOf("\"", indice + 1);
 
                 //Extrae la Fecha y hora
                 indice = Buf.IndexOf("\"", indice + 1);
 
                 Buf.CopyTo(indice + 1, fecha, 0, 17);
                 for (var index = 0; index < 17; index++)
-                {                    
+                {
                     if (fecha[index].Equals('/'))
                         timeStamp += "-";
                     else if (fecha[index].Equals(','))
@@ -163,28 +200,34 @@ namespace APISMS
                 }
 
                 indice = Buf.IndexOf("\"", indice + 1);
-                
+
                 //Extrae el mensaje
                 indice = Buf.IndexOf("\n", indice + 1);
 
-                Buf.CopyTo(indice + 1, sms, 0, 14);
-                for (var index = 0; index < 14; index++)
+                var fin = Buf.Length - (indice + 1) -3;
+
+                Buf.CopyTo(indice + 1, sms, 0, fin);
+                for (var index = 0; index < fin; index++)
                 {
                     Msg += sms[index];
                 }
 
                 //MessageBox.Show("Origen: " + Origen + "\nRecivido: " + timeStamp + "\nMensaje: " + Msg, "Contenido SMS");
                 this.SetText("");
-                //Inserta SMS en la DB
-                    Mysql(Origen, timeStamp, Msg);
+                return true;
             }
-            
+            else
+                return false;
         }
-
+        
         private void prueba()
         {
-            string Buf = "\r\n +CMT: \"3113047400\",,\"14/10/19,10:01:53-20\"\r\nHello world!!! \r\n";
-            char[] value = { ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ' };
+            string Buf = "\r\n +CMT: \"3113047400\",,\"15/04/18," 
+                        + System.DateTime.Now.ToString("HH:mm:ss", System.Globalization.DateTimeFormatInfo.InvariantInfo) + 
+                        "-20\"\r\n*722# \r\n";
+
+            this.SetText(Buf);   
+            /*char[] value = { ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ' };
 
             Estado.Text = Buf.IndexOf("\r", 0) + " " + Buf.IndexOf("\r", 1) + " " + Buf.IndexOf("\r", 46);
 
@@ -194,36 +237,51 @@ namespace APISMS
                 Estado.Text = Buf.IndexOf("\"", Buf.IndexOf("\"", 0) + 1) + " " + " ";
                 Buf.CopyTo(Buf.IndexOf("\"", 0)+1, value, 0, 10);
                 value.ToString();
+            }*/
+        }
+
+        private void ConnectMySql()
+        {
+        try
+            {
+                MySqlStatus.Text = "Ready";
+          
+                MySqlConnection MyConnection = new MySqlConnection(MyConString);
+                
+                //Conecta
+                MyConnection.Open();
+                MySqlStatus.Text = "Connect";
+            }
+            catch (Exception MyOdbcException) //Catch any ODBC exception ..
+            {
+                MySqlStatus.Text = "Error";
+                MessageBox.Show(MyOdbcException.Message, "ERROR");
+
             }
         }
 
        private void Mysql( string Origen, string timeStamp , string Msg)
         {
+            //MySqlStatus.Text = "Closed";
             try
             {
                 MySqlStatus.Text = "Ready";
-                //Connection string for Connector/ODBC 3.51
-                string MyConString = "Server=localhost;" +
-                  "Database=test;" +
-                  "Port=3306;" +
-                  "uid=designer;" +
-                  "password=test2014";
                 
                 string Insert = "insert into sms(Origen, timeStamp, Msg) value (" + Origen + ",'" + timeStamp + "',\"" + Msg + "\");";
                 MySqlConnection MyConnection = new MySqlConnection(MyConString);
-                MySqlDataAdapter myData = new MySqlDataAdapter();
-                              
-                MySqlCommandBuilder cb = new MySqlCommandBuilder(myData);
+                MySqlDataAdapter myData = new MySqlDataAdapter();                              
+                //MySqlCommandBuilder cb = new MySqlCommandBuilder(myData);
                 MySqlDataReader myRd;                
 
-                //Inserta
+                //Conecta
                 MyConnection.Open();
                 MySqlStatus.Text = "Connect";
+                //Inserta
                 myData.SelectCommand = new MySqlCommand(Insert, MyConnection);
                 myRd = myData.SelectCommand.ExecuteReader();
                 while (myRd.Read()) { }
-                MyConnection.Close();
-                MySqlStatus.Text = "Close";
+                //MyConnection.Close();
+                //MySqlStatus.Text = "Close";
                 
                 //MessageBox.Show("\n !!! success, connected successfully !!!\n", "success");
                 
@@ -236,6 +294,12 @@ namespace APISMS
             }
 
         }
+
+       private void Clear_Click(object sender, EventArgs e)
+       {
+           //textBox1.Clear();
+           prueba();
+       }
 
 
     }

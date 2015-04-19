@@ -9,3 +9,9 @@ C:\Users\produccion\Documents\Visual Studio 2013\Projects\APISMS\APISMS\obj\Rele
 C:\Users\produccion\apisms\APISMS\bin\Release\APISMS.exe.config
 C:\Users\produccion\apisms\APISMS\obj\Release\APISMS.exe
 C:\Users\produccion\apisms\APISMS\obj\Release\APISMS.pdb
+C:\Users\produccion\apisms\APISMS\bin\Release\APISMS.exe
+C:\Users\produccion\apisms\APISMS\bin\Release\APISMS.pdb
+C:\Users\produccion\apisms\APISMS\obj\Release\APISMS.csprojResolveAssemblyReference.cache
+C:\Users\produccion\apisms\APISMS\obj\Release\APISMS.Form1.resources
+C:\Users\produccion\apisms\APISMS\obj\Release\APISMS.Properties.Resources.resources
+C:\Users\produccion\apisms\APISMS\obj\Release\APISMS.csproj.GenerateResource.Cache
